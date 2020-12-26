@@ -1,0 +1,10 @@
+
+
+spring:
+  dataSource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost/springbook?serverTimezone=UTC
+    username: root
+    password: root
+    hikari:
+      auto-commit: false

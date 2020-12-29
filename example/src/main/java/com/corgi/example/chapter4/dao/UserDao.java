@@ -24,7 +24,7 @@ public class UserDao {
     private final DataSource dataSource;
     private final Logger log = LoggerFactory.getLogger(UserDao.class);
 
-    public List<User> getAll() throws QuerySyntaxException, SQLException {
+    public List<User> getAll() throws QuerySyntaxException {
         List<User> users = new ArrayList<>();
 
         try (Connection c = dataSource.getConnection();
@@ -39,12 +39,10 @@ public class UserDao {
                         .build());
             }
         } catch (SQLException e) {
-            log.error(e.getMessage());
-
             if (e.getErrorCode() == MysqlErrorNumbers.ER_PARSE_ERROR) {     // 예외 전환
                 throw new QuerySyntaxException(e);
             } else {
-                throw e;
+                throw new RuntimeException(e);
             }
         }
 

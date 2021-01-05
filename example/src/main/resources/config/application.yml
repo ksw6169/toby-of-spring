@@ -6,5 +6,5 @@ spring:
     url: jdbc:mysql://localhost/springbook?serverTimezone=UTC
     username: root
     password: root
-    hikari:
-      auto-commit: false
+#    hikari:
+#      auto-commit: false

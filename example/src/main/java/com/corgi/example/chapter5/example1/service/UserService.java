@@ -5,8 +5,12 @@ import com.corgi.example.chapter5.example1.domain.Level;
 import com.corgi.example.chapter5.example1.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.sql.DataSource;
@@ -26,12 +30,20 @@ public class UserService {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    @Qualifier(value = "chapter5TransactionManager")
+    private PlatformTransactionManager transactionManager;
+
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
+    }
+
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
     }
 
     public void upgradeLevels() throws Exception {
@@ -67,6 +79,33 @@ public class UserService {
             // 동기화 작업 종료 및 정리
             TransactionSynchronizationManager.unbindResource(dataSource);
             TransactionSynchronizationManager.clearSynchronization();
+        }
+    }
+
+    /**
+     * Spring에서 제공하는 트랜잭션 추상화 방법 적용
+     */
+    public void upgradeLevelsByTransactionManager() {
+
+        // JDBC 트랜잭션 추상화 오브젝트 생성
+//        PlatformTransactionManager txManager = new DataSourceTransactionManager(dataSource);
+
+        // 트랜잭션 시작, 트랜잭션은 TransactionStatus 타입의 변수에 저장된다.
+        // 트랜잭션에 대한 조작이 필요하다면 PlatformTransactionManager 메소드의 파라미터로 이 객체를 전달해주면 된다.
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        try {
+            List<User> users = userDao.getAll();
+            for (User user : users) {
+                if (canUpgradeLevel(user)) {
+                    upgradeLevel(user);
+                }
+            }
+
+            transactionManager.commit(status);   // 트랜잭션 커밋
+        } catch (RuntimeException e) {
+            transactionManager.rollback(status); // 트랜잭션 롤백
+            throw e;
         }
     }
 

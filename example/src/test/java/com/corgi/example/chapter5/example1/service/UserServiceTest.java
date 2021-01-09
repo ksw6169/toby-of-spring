@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
@@ -29,7 +30,8 @@ class UserServiceTest {
     private UserDao userDao;
 
     @Autowired
-    private DataSource dataSource;
+    @Qualifier(value = "chapter5TransactionManager")
+    private PlatformTransactionManager transactionManager;
 
     private List<User> users;
 
@@ -102,7 +104,7 @@ class UserServiceTest {
         // 예외를 발생시킬 4번째 사용자의 ID를 넣음
         UserService testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(userDao);
-        testUserService.setDataSource(dataSource);
+        testUserService.setTransactionManager(transactionManager);
 
         userDao.deleteAll();
 
@@ -111,7 +113,8 @@ class UserServiceTest {
         }
 
         try {
-            testUserService.upgradeLevels();
+//            testUserService.upgradeLevelsByTransactionManager();
+            testUserService.upgradeLevelsByTransactionManager();
             fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) { }
 

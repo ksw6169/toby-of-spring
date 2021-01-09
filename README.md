@@ -6,4 +6,5 @@
   - [2장_테스트](https://github.com/ksw6169/toby-of-spring/wiki/2%EC%9E%A5_%ED%85%8C%EC%8A%A4%ED%8A%B8)
   - [3장_템플릿](https://github.com/ksw6169/toby-of-spring/wiki/3%EC%9E%A5_%ED%85%9C%ED%94%8C%EB%A6%BF)
   - [4장_예외](https://github.com/ksw6169/toby-of-spring/wiki/4%EC%9E%A5_%EC%98%88%EC%99%B8)
+  - [5장_서비스 추상화](https://github.com/ksw6169/toby-of-spring/wiki/5%EC%9E%A5_%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%B6%94%EC%83%81%ED%99%94)
 - [Issues](https://github.com/ksw6169/toby-of-spring-study/issues)

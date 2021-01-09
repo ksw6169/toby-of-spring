@@ -3,6 +3,7 @@ package com.corgi.example.chapter5.example1.service;
 import com.corgi.example.chapter5.example1.dao.UserDao;
 import com.corgi.example.chapter5.example1.domain.Level;
 import com.corgi.example.chapter5.example1.domain.User;
+import com.corgi.example.chapter5.example1.policy.StandardUserLevelUpgradePolicy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,16 +28,37 @@ class UserServiceTest {
     @Qualifier(value = "chapter5UserDao1")
     private UserDao userDao;
 
+    @Autowired
+    private DataSource dataSource;
+
     private List<User> users;
+
+    static class TestUserService extends UserService {
+
+        private String id;
+
+        private TestUserService(String id) {
+            this.id = id;
+        }
+
+        @Override
+        protected void upgradeLevel(User user) {
+            if (user.getId().equals(this.id)) throw new TestUserServiceException();
+            super.upgradeLevel(user);
+        }
+    }
+
+    static class TestUserServiceException extends RuntimeException {
+    }
 
     @BeforeEach
     void setUp() {
         users = Arrays.asList(
-            new User("userId1", "userName1", "userPassword1", Level.BASIC, 49, 0),
-            new User("userId2", "userName2", "userPassword2", Level.BASIC, 50, 0),
-            new User("userId3", "userName3", "userPassword3", Level.SILVER, 60, 29),
-            new User("userId4", "userName4", "userPassword4", Level.SILVER, 60, 30),
-            new User("userId5", "userName5", "userPassword5", Level.GOLD, 49, 100)
+            new User("userId1", "userName1", "userPassword1", Level.BASIC, StandardUserLevelUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER-1, 0, null),
+            new User("userId2", "userName2", "userPassword2", Level.BASIC, StandardUserLevelUpgradePolicy.MIN_LOGCOUNT_FOR_SILVER, 0, null),
+            new User("userId3", "userName3", "userPassword3", Level.SILVER, 60, StandardUserLevelUpgradePolicy.MIN_RECOMMEND_FOR_GOLD-1, null),
+            new User("userId4", "userName4", "userPassword4", Level.SILVER, 60, StandardUserLevelUpgradePolicy.MIN_RECOMMEND_FOR_GOLD, null),
+            new User("userId5", "userName5", "userPassword5", Level.GOLD, 49, Integer.MAX_VALUE, null)
         );
     }
 
@@ -45,7 +68,7 @@ class UserServiceTest {
     }
 
     @Test
-    void upgradeLevels() {
+    void upgradeLevels() throws Exception {
         userDao.deleteAll();
 
         for (User user : users) {
@@ -54,15 +77,54 @@ class UserServiceTest {
 
         userService.upgradeLevels();
 
-        this.checkLevel(users.get(0), Level.BASIC);
-        this.checkLevel(users.get(1), Level.SILVER);
-        this.checkLevel(users.get(2), Level.SILVER);
-        this.checkLevel(users.get(3), Level.GOLD);
-        this.checkLevel(users.get(4), Level.GOLD);
+        this.checkLevelUpgraded(users.get(0), false);
+        this.checkLevelUpgraded(users.get(1), true);
+        this.checkLevelUpgraded(users.get(2), false);
+        this.checkLevelUpgraded(users.get(3), true);
+        this.checkLevelUpgraded(users.get(4), false);
     }
 
-    private void checkLevel(User user, Level expectedLevel) {
-        User updatedUser = userDao.get(user.getId());
-        assertEquals(expectedLevel, updatedUser.getLevel());
+    @Test
+    void add() {
+        userDao.deleteAll();
+
+        User user1 = users.get(0);
+        user1.setLevel(null);
+
+        User user2 = users.get(4);
+
+        userService.add(user1);
+        userService.add(user2);
+    }
+
+    @Test
+    public void upgradeAllOrNothing() throws Exception {
+        // 예외를 발생시킬 4번째 사용자의 ID를 넣음
+        UserService testUserService = new TestUserService(users.get(3).getId());
+        testUserService.setUserDao(userDao);
+        testUserService.setDataSource(dataSource);
+
+        userDao.deleteAll();
+
+        for (User user : users) {
+            userDao.add(user);
+        }
+
+        try {
+            testUserService.upgradeLevels();
+            fail("TestUserServiceException expected");
+        } catch (TestUserServiceException e) { }
+
+        checkLevelUpgraded(users.get(1), false);
+    }
+
+    private void checkLevelUpgraded(User user, boolean upgraded) {
+        User upgradedUser = userDao.get(user.getId());
+
+        if (upgraded) {
+            assertEquals(user.getLevel().nextLevel(), upgradedUser.getLevel());
+        } else {
+            assertEquals(user.getLevel(), upgradedUser.getLevel());
+        }
     }
 }

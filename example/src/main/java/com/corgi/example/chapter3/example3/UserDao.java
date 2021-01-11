@@ -5,8 +5,7 @@ import com.corgi.example.chapter3.example3.statement.AddStatement;
 import com.corgi.example.chapter3.example3.statement.DeleteAllStatement;
 import com.corgi.example.chapter3.example3.statement.StatementStrategy;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -14,12 +13,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+@Slf4j
 @RequiredArgsConstructor
 @Repository(value = "chapter3UserDao3")
 public class UserDao {
 
     private final DataSource dataSource;
-    private final Logger log = LoggerFactory.getLogger(UserDao.class);
 
     /**
      * 컨텍스트 메소드를 호출하는 클라이언트 코드

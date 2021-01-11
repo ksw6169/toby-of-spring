@@ -1,16 +1,14 @@
 package com.corgi.example.chapter3.example8;
 
 import com.corgi.example.chapter3.example8.template.LineCallback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+@Slf4j
 public class Calculator {
-
-    private final Logger log = LoggerFactory.getLogger(Calculator.class);
 
     public Integer calcSum(String path) throws IOException {
         LineCallback<Integer> callback = new LineCallback<Integer>() {

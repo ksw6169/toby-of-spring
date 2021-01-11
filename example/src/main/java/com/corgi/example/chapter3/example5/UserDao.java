@@ -3,8 +3,7 @@ package com.corgi.example.chapter3.example5;
 import com.corgi.example.chapter3.example5.entity.User;
 import com.corgi.example.chapter3.example5.statement.StatementStrategy;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -17,12 +16,12 @@ import java.sql.SQLException;
  * 로컬 클래스를 활용하던 Legacy 4에서 익명 내부 클래스를 사용하는 Legacy 5로 변경
  * (일회성으로 사용되기 때문에 클래스명이 불필요하므로, 간결하게 사용하기 위해 제거)
  */
+@Slf4j
 @RequiredArgsConstructor
 @Repository(value = "chapter3UserDao5")
 public class UserDao {
 
     private final DataSource dataSource;
-    private final Logger log = LoggerFactory.getLogger(UserDao.class);
 
     public void deleteAll() throws SQLException {
         jdbcContextWithStatementStrategy(new StatementStrategy() {

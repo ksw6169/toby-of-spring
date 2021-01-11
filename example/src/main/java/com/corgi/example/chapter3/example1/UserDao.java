@@ -2,8 +2,7 @@ package com.corgi.example.chapter3.example1;
 
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -12,13 +11,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Slf4j
 @RequiredArgsConstructor
 @Repository(value = "chapter3UserDao1")
 public class UserDao {
 
     private final DataSource dataSource;
-
-    private final Logger log = LoggerFactory.getLogger(UserDao.class);
 
     public void deleteAll() throws SQLException {
 

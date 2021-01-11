@@ -3,8 +3,7 @@ package com.corgi.example.chapter3.example4;
 import com.corgi.example.chapter3.example4.entity.User;
 import com.corgi.example.chapter3.example4.statement.StatementStrategy;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -19,12 +18,12 @@ import java.sql.SQLException;
  * (AddStatement 같은 클래스는 UserDao의 특정 메소드에서만 사용하기 때문에
  * 재활용이 불가능하므로 내부 클래스로 정의해서 사용하는 것을 고려해볼 수 있음)
  */
+@Slf4j
 @RequiredArgsConstructor
 @Repository(value = "chapter3UserDao4")
 public class UserDao {
 
     private final DataSource dataSource;
-    private final Logger log = LoggerFactory.getLogger(UserDao.class);
 
     public void deleteAll() throws SQLException {
 

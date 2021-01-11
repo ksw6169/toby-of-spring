@@ -2,20 +2,18 @@ package com.corgi.example.chapter3.example2;
 
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+@Slf4j
 @RequiredArgsConstructor
 public abstract class UserDao {
 
     private final DataSource dataSource;
-
-    private final Logger log = LoggerFactory.getLogger(UserDao.class);
 
     public void deleteAll() throws SQLException {
 

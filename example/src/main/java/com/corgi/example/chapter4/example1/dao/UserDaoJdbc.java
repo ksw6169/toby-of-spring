@@ -3,8 +3,7 @@ package com.corgi.example.chapter4.example1.dao;
 
 import com.corgi.example.chapter4.example1.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,14 +14,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+@Slf4j
 @Repository(value = "chapter4UserDao1")
 public class UserDaoJdbc implements UserDao {
 
     @Autowired
     @Qualifier(value = "chapter4JdbcTemplate1")
     private JdbcTemplate jdbcTemplate;
-
-    private static final Logger log = LoggerFactory.getLogger(UserDaoJdbc.class);
 
     private final RowMapper<User> userMapper = new RowMapper<User>() {
         @Override

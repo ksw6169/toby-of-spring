@@ -2,8 +2,7 @@ package com.corgi.example.chapter3.example7.context;
 
 import com.corgi.example.chapter3.example7.statement.StatementStrategy;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -13,10 +12,10 @@ import java.sql.SQLException;
 
 @Component(value = "chapter3JdbcContext7")
 @AllArgsConstructor
+@Slf4j
 public class JdbcContext {
 
     private DataSource dataSource;
-    private final Logger log = LoggerFactory.getLogger(JdbcContext.class);
 
     public void executeSql(final String sql) throws SQLException {
 

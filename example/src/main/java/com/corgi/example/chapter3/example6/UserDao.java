@@ -3,8 +3,7 @@ package com.corgi.example.chapter3.example6;
 import com.corgi.example.chapter3.example6.context.JdbcContext;
 import com.corgi.example.chapter3.example6.entity.User;
 import com.corgi.example.chapter3.example6.statement.StatementStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -18,14 +17,13 @@ import java.sql.SQLException;
  * 다른 Dao에서 사용할 수 있도록 {@link com.corgi.example.chapter3.example5.UserDao#jdbcContextWithStatementStrategy(com.corgi.example.chapter3.example5.statement.StatementStrategy)} 기능을
  * 별도 컨텍스트 클래스 {@link JdbcContext} 로 분리
  */
+@Slf4j
 @Repository(value = "chapter3UserDao6")
 public class UserDao {
 
     @Autowired
     @Qualifier(value = "chapter3JdbcContext6")
     private JdbcContext jdbcContext;
-
-    private final Logger log = LoggerFactory.getLogger(UserDao.class);
 
     public void deleteAll() throws SQLException {
         jdbcContext.workWithStatementStrategy(new StatementStrategy() {

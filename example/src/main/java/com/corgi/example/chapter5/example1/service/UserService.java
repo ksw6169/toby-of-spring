@@ -5,8 +5,9 @@ import com.corgi.example.chapter5.example1.domain.Level;
 import com.corgi.example.chapter5.example1.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -34,6 +35,10 @@ public class UserService {
     @Qualifier(value = "chapter5TransactionManager")
     private PlatformTransactionManager transactionManager;
 
+    @Autowired
+    @Qualifier(value = "chapter5DummyMailSender")
+    private MailSender mailSender;
+
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
@@ -44,6 +49,10 @@ public class UserService {
 
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
         this.transactionManager = transactionManager;
+    }
+
+    public void setMailSender(MailSender mailSender) {
+        this.mailSender = mailSender;
     }
 
     public void upgradeLevels() throws Exception {
@@ -58,7 +67,7 @@ public class UserService {
 
         try {
             // 트랜잭션을 적용할 작업들
-            List<User> users = userDao.getAll();
+            List<User> users = this.userDao.getAll();
 
             for (User user : users) {
                 if (canUpgradeLevel(user)) {
@@ -95,7 +104,7 @@ public class UserService {
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
 
         try {
-            List<User> users = userDao.getAll();
+            List<User> users = this.userDao.getAll();
             for (User user : users) {
                 if (canUpgradeLevel(user)) {
                     upgradeLevel(user);
@@ -114,7 +123,7 @@ public class UserService {
             user.setLevel(Level.BASIC);
         }
 
-        return userDao.add(user);
+        return this.userDao.add(user);
     }
 
     protected boolean canUpgradeLevel(User user) {
@@ -130,6 +139,17 @@ public class UserService {
 
     protected void upgradeLevel(User user) {
         user.upgradeLevel();
-        userDao.update(user);
+        this.userDao.update(user);
+        sendUpgradeEmail(user);
+    }
+
+    private void sendUpgradeEmail(User user) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setFrom("ksw6169@naver.com");
+        message.setSubject("Upgrade 안내");
+        message.setText("사용자님의 등급이 " + user.getLevel() + "로 업그레이드 되었습니다.");
+
+        this.mailSender.send(message);
     }
 }

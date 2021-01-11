@@ -25,9 +25,9 @@ class UserDaoTest {
 
     @BeforeEach
     void setUp() {
-        this.user1 = new User("testId1", "testName1", "testPassword1", Level.BASIC, 1, 0, null);
-        this.user2 = new User("testId2", "testName2", "testPassword2", Level.SILVER, 55, 10, null);
-        this.user3 = new User("testId3", "testName3", "testPassword3", Level.GOLD, 100, 40, null);
+        this.user1 = new User("testId1", "testName1", "testPassword1", Level.BASIC, 1, 0, null, "testEmail1@naver.com");
+        this.user2 = new User("testId2", "testName2", "testPassword2", Level.SILVER, 55, 10, null, "testEmail2@naver.com");
+        this.user3 = new User("testId3", "testName3", "testPassword3", Level.GOLD, 100, 40, null, "testEmail3@naver.com");
     }
 
     @Test

@@ -1,8 +1,7 @@
 package com.corgi.example.chapter5.example1.dao;
 
 import com.corgi.example.chapter5.example1.domain.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Slf4j
 @Repository(value = "chapter5UserDao1")
 public class UserDaoJdbc implements UserDao {
 
@@ -21,8 +21,6 @@ public class UserDaoJdbc implements UserDao {
     @Autowired
     @Qualifier(value = "chapter5UserRowMapper1")
     private RowMapper<User> rowMapper;
-
-    private static final Logger log = LoggerFactory.getLogger(UserDaoJdbc.class);
 
     @Override
     public User get(String id) {
@@ -41,14 +39,14 @@ public class UserDaoJdbc implements UserDao {
 
     @Override
     public int add(User user) {
-        return jdbcTemplate.update("insert into users(id, name, password, level, login, recommend) values(?,?,?,?,?,?)",
-                user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
+        return jdbcTemplate.update("insert into users(id, name, password, level, login, recommend, email) values(?,?,?,?,?,?,?)",
+                user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail());
     }
 
     @Override
     public int update(User user) {
-        return jdbcTemplate.update("update users set name = ?, password = ?, level = ?, login = ?, recommend = ? where id = ? ",
-                user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getId());
+        return jdbcTemplate.update("update users set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? where id = ? ",
+                user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail(), user.getId());
     }
 
     @Override

@@ -17,6 +17,7 @@ public class User {
     private int login;
     private int recommend;
     private Date lastUpgraded;
+    private String email;
 
     public void upgradeLevel() {
         Level nextLevel = this.level.nextLevel();

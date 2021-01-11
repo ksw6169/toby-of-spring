@@ -24,6 +24,7 @@ public class Chapter5RowMapperConfig {
                         .level(Level.valueOf(rs.getInt("level")))
                         .login(rs.getInt("login"))
                         .recommend(rs.getInt("recommend"))
+                        .email(rs.getString("email"))
                         .build();
             }
         };

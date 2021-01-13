@@ -9,10 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -77,9 +80,10 @@ class UserServiceTest {
     void upgradeLevels() throws Exception {
         userDao.deleteAll();
 
-        for (User user : users) {
-            userDao.add(user);
-        }
+        for (User user : users) userDao.add(user);
+
+        MockMailSender mockMailSender = new MockMailSender();
+        userService.setMailSender(mockMailSender);
 
         userService.upgradeLevels();
 
@@ -88,6 +92,11 @@ class UserServiceTest {
         this.checkLevelUpgraded(users.get(2), false);
         this.checkLevelUpgraded(users.get(3), true);
         this.checkLevelUpgraded(users.get(4), false);
+
+        List<String> request = mockMailSender.getRequests();
+        assertEquals(2, request.size());
+        assertEquals(users.get(1).getEmail(), request.get(0));
+        assertEquals(users.get(3).getEmail(), request.get(1));
     }
 
     @Test
@@ -133,6 +142,21 @@ class UserServiceTest {
             assertEquals(user.getLevel().nextLevel(), upgradedUser.getLevel());
         } else {
             assertEquals(user.getLevel(), upgradedUser.getLevel());
+        }
+    }
+
+    static class MockMailSender implements MailSender {
+        private List<String> requests = new ArrayList<>();
+
+        public List<String> getRequests() {
+            return requests;
+        }
+
+        public void send(SimpleMailMessage mailMessage) throws MailException {
+            requests.add(mailMessage.getTo()[0]);
+        }
+
+        public void send(SimpleMailMessage[] mailMessages) throws MailException {
         }
     }
 }

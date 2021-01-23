@@ -3,12 +3,12 @@ package com.corgi.example.service;
 import com.corgi.example.dao.UserDao;
 import com.corgi.example.domain.Level;
 import com.corgi.example.domain.User;
-import com.corgi.example.factory.TxProxyFactory;
 import com.corgi.example.policy.StandardUserLevelUpgradePolicy;
 import com.corgi.example.proxy.handler.TransactionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.MailSender;
@@ -37,7 +37,8 @@ class UserServiceImplTests {
     private UserDao userDao;
 
     @Autowired
-    private TxProxyFactory txProxyFactory;
+    private ProxyFactoryBean proxyFactoryBean;
+
 
     private List<User> users;
 
@@ -103,8 +104,8 @@ class UserServiceImplTests {
         testUserService.setUserDao(userDao);
         testUserService.setMailSender(mock(MailSender.class));
 
-        txProxyFactory.setTarget(testUserService);
-        UserService txUserService = (UserService) txProxyFactory.getObject();
+        proxyFactoryBean.setTarget(testUserService);
+        UserService txUserService = (UserService) proxyFactoryBean.getObject();
 
         userDao.deleteAll();
 

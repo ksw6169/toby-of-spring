@@ -3,6 +3,7 @@ package com.corgi.example.service;
 import com.corgi.example.dao.UserDao;
 import com.corgi.example.domain.Level;
 import com.corgi.example.domain.User;
+import com.corgi.example.factory.TxProxyFactory;
 import com.corgi.example.policy.StandardUserLevelUpgradePolicy;
 import com.corgi.example.proxy.handler.TransactionHandler;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,13 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -33,6 +35,9 @@ class UserServiceImplTests {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private TxProxyFactory txProxyFactory;
 
     private List<User> users;
 
@@ -91,7 +96,15 @@ class UserServiceImplTests {
     }
 
     @Test
+    @DirtiesContext
     void upgradeAllOrNothing() throws Exception {
+
+        TestUserService testUserService = new TestUserService(users.get(3).getId());
+        testUserService.setUserDao(userDao);
+        testUserService.setMailSender(mock(MailSender.class));
+
+        txProxyFactory.setTarget(testUserService);
+        UserService txUserService = (UserService) txProxyFactory.getObject();
 
         userDao.deleteAll();
 
@@ -99,23 +112,15 @@ class UserServiceImplTests {
             userDao.add(user);
         }
 
-        MailSender mockMailSender = mock(MailSender.class);
-        userServiceImpl.setMailSender(mockMailSender);
-
         txHandler.setPattern("upgradeLevels");
 
-        UserService txUserService = (UserService) Proxy.newProxyInstance(
-                getClass().getClassLoader(),
-                new Class[] { UserService.class },
-                txHandler);
+        try {
+            txUserService.upgradeLevels();
+            fail("TestUserServiceException expected");
+        } catch (TestUserServiceException e) {
+        }
 
-        txUserService.upgradeLevels();
-
-        checkLevelUpgraded(users.get(0), false);
-        checkLevelUpgraded(users.get(1), true);
-        checkLevelUpgraded(users.get(2), false);
-        checkLevelUpgraded(users.get(3), true);
-        checkLevelUpgraded(users.get(4), false);
+        checkLevelUpgraded(users.get(1), false);
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {

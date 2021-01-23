@@ -1,5 +1,6 @@
 package com.corgi.example.factory;
 
+import com.corgi.example.domain.Message;
 import lombok.Setter;
 import org.springframework.beans.factory.FactoryBean;
 

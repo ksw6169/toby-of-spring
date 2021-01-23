@@ -1,6 +1,6 @@
 package com.corgi.example.learningtest;
 
-import com.corgi.example.factory.Message;
+import com.corgi.example.domain.Message;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.corgi.example.factory;
+package com.corgi.example.domain;
 
 import lombok.Getter;
 

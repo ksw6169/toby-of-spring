@@ -4,6 +4,7 @@ import com.corgi.example.dao.UserDao;
 import com.corgi.example.domain.Level;
 import com.corgi.example.domain.User;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
 @Service(value = "userServiceImpl")
 public class UserServiceImpl implements UserService {

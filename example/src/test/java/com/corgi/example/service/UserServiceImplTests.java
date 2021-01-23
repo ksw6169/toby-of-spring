@@ -4,6 +4,7 @@ import com.corgi.example.dao.UserDao;
 import com.corgi.example.domain.Level;
 import com.corgi.example.domain.User;
 import com.corgi.example.policy.StandardUserLevelUpgradePolicy;
+import com.corgi.example.proxy.handler.TransactionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -11,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +29,10 @@ class UserServiceImplTests {
     private UserServiceImpl userServiceImpl;
 
     @Autowired
-    private PlatformTransactionManager transactionManager;
+    private TransactionHandler txHandler;
+
+    @Autowired
+    private UserDao userDao;
 
     private List<User> users;
 
@@ -84,5 +88,43 @@ class UserServiceImplTests {
         verify(mockMailSender, times(2)).send(any(SimpleMailMessage.class));
         assertEquals(users.get(1).getEmail(), mailMessages.get(0).getTo()[0]);
         assertEquals(users.get(3).getEmail(), mailMessages.get(1).getTo()[0]);
+    }
+
+    @Test
+    void upgradeAllOrNothing() throws Exception {
+
+        userDao.deleteAll();
+
+        for (User user : users) {
+            userDao.add(user);
+        }
+
+        MailSender mockMailSender = mock(MailSender.class);
+        userServiceImpl.setMailSender(mockMailSender);
+
+        txHandler.setPattern("upgradeLevels");
+
+        UserService txUserService = (UserService) Proxy.newProxyInstance(
+                getClass().getClassLoader(),
+                new Class[] { UserService.class },
+                txHandler);
+
+        txUserService.upgradeLevels();
+
+        checkLevelUpgraded(users.get(0), false);
+        checkLevelUpgraded(users.get(1), true);
+        checkLevelUpgraded(users.get(2), false);
+        checkLevelUpgraded(users.get(3), true);
+        checkLevelUpgraded(users.get(4), false);
+    }
+
+    private void checkLevelUpgraded(User user, boolean upgraded) {
+        User upgradedUser = userDao.get(user.getId());
+
+        if (upgraded) {
+            assertEquals(user.getLevel().nextLevel(), upgradedUser.getLevel());
+        } else {
+            assertEquals(user.getLevel(), upgradedUser.getLevel());
+        }
     }
 }

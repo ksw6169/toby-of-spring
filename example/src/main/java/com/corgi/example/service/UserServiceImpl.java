@@ -4,14 +4,16 @@ import com.corgi.example.dao.UserDao;
 import com.corgi.example.domain.Level;
 import com.corgi.example.domain.User;
 import lombok.AllArgsConstructor;
+import lombok.Setter;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Setter
 @AllArgsConstructor
-@Service
+@Service(value = "userServiceImpl")
 public class UserServiceImpl implements UserService {
 
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
@@ -19,14 +21,6 @@ public class UserServiceImpl implements UserService {
 
     private UserDao userDao;
     private MailSender mailSender;
-
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
-    public void setMailSender(MailSender mailSender) {
-        this.mailSender = mailSender;
-    }
 
     @Override
     public void upgradeLevels() {

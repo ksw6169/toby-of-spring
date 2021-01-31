@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
@@ -28,7 +27,10 @@ import static org.mockito.Mockito.*;
 class UserServiceImplTests {
 
     @Autowired
-    private UserServiceImpl userServiceImpl;
+    private UserService userService;
+
+    @Autowired
+    private UserService testUserService;
 
     @Autowired
     private TransactionHandler txHandler;
@@ -55,34 +57,34 @@ class UserServiceImplTests {
 
     @Test
     void mockAdd() {
-        UserDao mockUserDao = mock(UserDao.class);
-        userServiceImpl.setUserDao(mockUserDao);
+//        UserDao mockUserDao = mock(UserDao.class);
+//        userService.setUserDao(mockUserDao);
 
-        mockUserDao.deleteAll();
+        userDao.deleteAll();
 
         User user1 = users.get(0);
         user1.setLevel(null);
 
         User user2 = users.get(4);
 
-        when(mockUserDao.add(any(User.class))).thenReturn(1);
+        when(userDao.add(any(User.class))).thenReturn(1);
 
-        assertEquals(1, userServiceImpl.add(user1));
-        assertEquals(1, userServiceImpl.add(user2));
+        assertEquals(1, testUserService.add(user1));
+        assertEquals(1, testUserService.add(user2));
     }
 
     @Test
     void mockUpgradeLevels() {
         UserDao mockUserDao = mock(UserDao.class);
         when(mockUserDao.getAll()).thenReturn(this.users);
-        userServiceImpl.setUserDao(mockUserDao);
+//        userService.setUserDao(mockUserDao);
 
         ArgumentCaptor<SimpleMailMessage> mailMessageArg = ArgumentCaptor.forClass(SimpleMailMessage.class);
         MailSender mockMailSender = mock(MailSender.class);
         doNothing().when(mockMailSender).send(mailMessageArg.capture());
-        userServiceImpl.setMailSender(mockMailSender);
+//        userService.setMailSender(mockMailSender);
 
-        userServiceImpl.upgradeLevels();
+        testUserService.upgradeLevels();
 
         verify(mockUserDao, times(2)).update(any(User.class));
         verify(mockUserDao).update(users.get(1));
@@ -97,16 +99,7 @@ class UserServiceImplTests {
     }
 
     @Test
-    @DirtiesContext
-    void upgradeAllOrNothing() throws Exception {
-
-        TestUserService testUserService = new TestUserService(users.get(3).getId());
-        testUserService.setUserDao(userDao);
-        testUserService.setMailSender(mock(MailSender.class));
-
-        proxyFactoryBean.setTarget(testUserService);
-        UserService txUserService = (UserService) proxyFactoryBean.getObject();
-
+    void upgradeAllOrNothing() {
         userDao.deleteAll();
 
         for (User user : users) {
@@ -116,7 +109,7 @@ class UserServiceImplTests {
         txHandler.setPattern("upgradeLevels");
 
         try {
-            txUserService.upgradeLevels();
+            testUserService.upgradeLevels();
             fail("TestUserServiceException expected");
         } catch (TestUserServiceException e) {
         }

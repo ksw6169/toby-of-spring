@@ -3,9 +3,8 @@ package com.corgi.example.service;
 import com.corgi.example.dao.UserDao;
 import com.corgi.example.domain.Level;
 import com.corgi.example.domain.User;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
@@ -13,20 +12,25 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Service(value = "userServiceImpl")
+@Service(value = "userService")
 public class UserServiceImpl implements UserService {
 
     public static final int MIN_LOGCOUNT_FOR_SILVER = 50;
     public static final int MIN_RECOMMEND_FOR_GOLD = 30;
 
+    @Autowired
     private UserDao userDao;
-    private MailSender mailSender;
+
+//    @Autowired
+//    private MailSender mailSender;
+
+//    public void setMailSender(MailSender mailSender) {
+//        this.mailSender = mailSender;
+//    }
 
     @Override
     public void upgradeLevels() {
-        List<User> users = this.userDao.getAll();
+        List<User> users = userDao.getAll();
         for (User user : users) {
             if (canUpgradeLevel(user)) {
                 upgradeLevel(user);
@@ -67,6 +71,6 @@ public class UserServiceImpl implements UserService {
         message.setSubject("Upgrade 안내");
         message.setText("사용자님의 등급이 " + user.getLevel() + "로 업그레이드 되었습니다.");
 
-        this.mailSender.send(message);
+//        this.mailSender.send(message);
     }
 }

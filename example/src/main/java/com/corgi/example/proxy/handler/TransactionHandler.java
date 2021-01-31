@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
 public class TransactionHandler implements InvocationHandler {
 
     @Autowired
-    @Qualifier(value = "userServiceImpl")
+    @Qualifier(value = "userService")
     private Object target;  // 부가 기능을 제공할 타깃 오브젝트. 어떤 타입의 오브젝트에도 적용할 수 있다.
 
     @Autowired

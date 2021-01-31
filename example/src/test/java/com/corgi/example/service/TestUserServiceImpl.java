@@ -1,14 +1,13 @@
 package com.corgi.example.service;
 
 import com.corgi.example.domain.User;
+import org.springframework.stereotype.Service;
 
-public class TestUserService extends UserServiceImpl {
 
-    private String exceptionUserId;
+@Service(value = "testUserService")
+public class TestUserServiceImpl extends UserServiceImpl {
 
-    public TestUserService(String exceptionUserId) {
-        this.exceptionUserId = exceptionUserId;
-    }
+    private String exceptionUserId = "userId4";    // 테스트 픽스처의 users(3)의 ID 값을 고정하였음
 
     @Override
     protected void upgradeLevel(User user) {

@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.jupiter.api.Test;
+import org.springframework.aop.ClassFilter;
+import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -17,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * 다이내믹 프록시를 이용한 프록시 클래스 학습 테스트(439p)
  */
+@SpringBootTest
 public class ProxyTests {
 
     interface Hello {
@@ -162,5 +166,64 @@ public class ProxyTests {
         assertEquals("HELLO TOBY", proxiedHello.sayHello("Toby"));
         assertEquals("HI TOBY", proxiedHello.sayHi("Toby"));
         assertEquals("Thank You Toby", proxiedHello.sayThankYou("Toby"));   // 메소드 이름이 포인트컷의 선정조건에 맞지 않으므로 부가 기능(대문자 변환)이 적용되지 않음
+    }
+
+    @Test
+    public void classNamePointcutAdvisor() {
+
+        /**
+         * class 이름이 'HelloT'로 시작하는 빈만 Advice 적용 대상으로 선정한다.
+         */
+        NameMatchMethodPointcut classMethodPointcut = new NameMatchMethodPointcut() {
+            @Override
+            public ClassFilter getClassFilter() {
+                return new ClassFilter() {
+                    @Override
+                    public boolean matches(Class<?> clazz) {
+                        return clazz.getSimpleName().startsWith("HelloT");
+                    }
+                };
+            }
+        };
+
+        // `sayH`로 시작하는 메소드 이름을 가진 메소드만 선정한다.
+        classMethodPointcut.setMappedName("sayH*");
+
+        // Test
+        checkAdviced(new HelloTarget(), classMethodPointcut, true);
+
+        class HelloWorld extends HelloTarget {};
+        checkAdviced(new HelloWorld(), classMethodPointcut, false);
+
+        class HelloToby extends HelloTarget {};
+        checkAdviced(new HelloToby(), classMethodPointcut, true);
+
+    }
+
+    /**
+     * Advice 적용 여부 확인 메소드
+     * @param target    Proxy target
+     * @param pointcut  Pointcut
+     * @param adviced   적용 대상 여부
+     */
+    private void checkAdviced(Object target, Pointcut pointcut, boolean adviced) {
+        ProxyFactoryBean pfBean = new ProxyFactoryBean();
+        pfBean.setTarget(target);
+        pfBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice()));
+
+        Hello proxiedHello = (Hello) pfBean.getObject();
+
+        if (adviced) {
+            /**
+             * Method 선정 방식을 통한 어드바이스 적용 여부 확인
+             */
+            assertEquals("HELLO TOBY", proxiedHello.sayHello("Toby"));
+            assertEquals("HI TOBY", proxiedHello.sayHi("Toby"));
+            assertEquals("Thank You Toby", proxiedHello.sayThankYou("Toby"));
+        } else {
+            assertEquals("Hello Toby", proxiedHello.sayHello("Toby"));
+            assertEquals("Hi Toby", proxiedHello.sayHi("Toby"));
+            assertEquals("Thank You Toby", proxiedHello.sayThankYou("Toby"));
+        }
     }
 }

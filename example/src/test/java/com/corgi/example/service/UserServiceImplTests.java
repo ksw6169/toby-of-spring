@@ -8,6 +8,7 @@ import com.corgi.example.proxy.handler.TransactionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
@@ -115,6 +117,12 @@ class UserServiceImplTests {
         }
 
         checkLevelUpgraded(users.get(1), false);
+    }
+
+    @Test
+    void advisorAutoProxyCreator() {
+        // todo - java.reflect.Proxy != java.sun.Proxy
+//        assertEquals(Proxy.class, testUserService.getClass());
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {

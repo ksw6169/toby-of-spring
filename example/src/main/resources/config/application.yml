@@ -8,3 +8,7 @@ spring:
     password: root
 #    hikari:
 #      auto-commit: false
+
+# ref : https://n1tjrgns.tistory.com/172
+  main:
+    allow-bean-definition-overriding: true

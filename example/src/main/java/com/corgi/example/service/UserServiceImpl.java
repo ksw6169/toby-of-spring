@@ -5,7 +5,6 @@ import com.corgi.example.domain.Level;
 import com.corgi.example.domain.User;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +28,35 @@ public class UserServiceImpl implements UserService {
 //    }
 
     @Override
+    public void add(User user) {
+        if (user.getLevel() == null) {
+            user.setLevel(Level.BASIC);
+        }
+
+        userDao.add(user);
+    }
+
+    @Override
+    public User get(String id) {
+        return userDao.get(id);
+    }
+
+    @Override
+    public List<User> getAll() {
+        return userDao.getAll();
+    }
+
+    @Override
+    public void deleteAll() {
+        userDao.deleteAll();
+    }
+
+    @Override
+    public void update(User user) {
+        userDao.update(user);
+    }
+
+    @Override
     public void upgradeLevels() {
         List<User> users = userDao.getAll();
         for (User user : users) {
@@ -36,15 +64,6 @@ public class UserServiceImpl implements UserService {
                 upgradeLevel(user);
             }
         }
-    }
-
-    @Override
-    public int add(User user) {
-        if (user.getLevel() == null) {
-            user.setLevel(Level.BASIC);
-        }
-
-        return this.userDao.add(user);
     }
 
     protected boolean canUpgradeLevel(User user) {

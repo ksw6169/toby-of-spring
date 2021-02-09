@@ -100,6 +100,6 @@ public class MockitoTests {
         when(userDao.add(any(User.class))).thenReturn(1);
 
         User user = mock(User.class);
-        assertEquals(1, userServiceImpl.add(user));
+        userServiceImpl.add(user);
     }
 }

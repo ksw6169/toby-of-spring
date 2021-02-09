@@ -4,19 +4,15 @@ import com.corgi.example.dao.UserDao;
 import com.corgi.example.domain.Level;
 import com.corgi.example.domain.User;
 import com.corgi.example.policy.StandardUserLevelUpgradePolicy;
-import com.corgi.example.proxy.handler.TransactionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.aop.aspectj.AspectJExpressionPointcut;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,14 +31,7 @@ class UserServiceImplTests {
     private UserService testUserService;
 
     @Autowired
-    private TransactionHandler txHandler;
-
-    @Autowired
     private UserDao userDao;
-
-    @Autowired
-    private ProxyFactoryBean proxyFactoryBean;
-
 
     private List<User> users;
 
@@ -71,8 +60,8 @@ class UserServiceImplTests {
 
         when(userDao.add(any(User.class))).thenReturn(1);
 
-        assertEquals(1, testUserService.add(user1));
-        assertEquals(1, testUserService.add(user2));
+        testUserService.add(user1);
+        testUserService.add(user2);
     }
 
     @Test
@@ -107,8 +96,6 @@ class UserServiceImplTests {
         for (User user : users) {
             userDao.add(user);
         }
-
-        txHandler.setPattern("upgradeLevels");
 
         try {
             testUserService.upgradeLevels();

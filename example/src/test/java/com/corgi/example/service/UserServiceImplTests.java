@@ -9,19 +9,17 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-@Transactional
 class UserServiceImplTests {
 
     @Autowired
@@ -110,6 +108,11 @@ class UserServiceImplTests {
     void advisorAutoProxyCreator() {
         // todo - java.reflect.Proxy != java.sun.Proxy
 //        assertEquals(Proxy.class, testUserService.getClass());
+    }
+
+    @Test
+    void readOnlyTransactionAttribute() {
+        assertThrows(TransientDataAccessResourceException.class, () -> testUserService.getAll());
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {

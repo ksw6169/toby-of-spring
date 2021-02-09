@@ -27,14 +27,14 @@ public class AopConfig {
     }
 
     @Bean
-    public Advisor transactionAdvisor(TransactionInterceptor transactionAdvice) {
+    public Advisor txAdvisor(TransactionInterceptor txAdvice) {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
         pointcut.setExpression("execution(* *..*ServiceImpl.*(..))");
-        return new DefaultPointcutAdvisor(pointcut, transactionAdvice);
+        return new DefaultPointcutAdvisor(pointcut, txAdvice);
     }
 
     @Bean
-    public TransactionInterceptor transactionAdvice(PlatformTransactionManager transactionManager) {
+    public TransactionInterceptor txAdvice(PlatformTransactionManager transactionManager) {
         DefaultTransactionAttribute readOnlyAttribute = new DefaultTransactionAttribute(TransactionDefinition.PROPAGATION_REQUIRED);
         readOnlyAttribute.setReadOnly(true);
 

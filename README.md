@@ -8,4 +8,5 @@
   - [4장_예외](https://github.com/ksw6169/toby-of-spring/wiki/4%EC%9E%A5_%EC%98%88%EC%99%B8)
   - [5장_서비스 추상화](https://github.com/ksw6169/toby-of-spring/wiki/5%EC%9E%A5_%EC%84%9C%EB%B9%84%EC%8A%A4-%EC%B6%94%EC%83%81%ED%99%94)
   - [6장_AOP](https://github.com/ksw6169/toby-of-spring/wiki/6%EC%9E%A5_AOP)
+  - [7장_스프링 핵심 기술의 응용](https://github.com/ksw6169/toby-of-spring/wiki/7%EC%9E%A5_%EC%8A%A4%ED%94%84%EB%A7%81-%ED%95%B5%EC%8B%AC-%EA%B8%B0%EC%88%A0%EC%9D%98-%EC%9D%91%EC%9A%A9)
 - [Issues](https://github.com/ksw6169/toby-of-spring-study/issues)

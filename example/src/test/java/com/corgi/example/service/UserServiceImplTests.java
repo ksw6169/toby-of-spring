@@ -53,17 +53,15 @@ class UserServiceImplTests {
 
     @Test
     void mockAdd() {
-//        UserDao mockUserDao = mock(UserDao.class);
-//        userService.setUserDao(mockUserDao);
-
-        userDao.deleteAll();
+        UserDao mockUserDao = mock(UserDao.class);
+        mockUserDao.deleteAll();
 
         User user1 = users.get(0);
         user1.setLevel(null);
 
         User user2 = users.get(4);
 
-        when(userDao.add(any(User.class))).thenReturn(1);
+        when(mockUserDao.add(any(User.class))).thenReturn(1);
 
         testUserService.add(user1);
         testUserService.add(user2);

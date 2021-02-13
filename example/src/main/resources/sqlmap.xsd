@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="http://www.epril.com/sqlmap"
+        xmlns:tns="http://www.epril.com/sqlmap" elementFormDefault="qualified">
+    <!--
+        SQL 맵 문서에 대한 스키마 정의 파일
+    -->
+    <element name="sqlmap">
+        <complexType>
+            <sequence>
+                <element name="sql" maxOccurs="unbounded" type="tns:sqlType" />
+            </sequence>
+        </complexType>
+    </element>
+
+    <complexType name="sqlType">
+        <simpleContent>
+            <!-- SQL 문장을 넣을 스트링 타입을 정의한다. -->
+            <extension base="string">
+                <!-- 검색을 위한 키 값은 <sql>의 key attribute에 넣는다. 반드시 입력해야하는 필수 값이다. -->
+                <attribute name="key" use="required" type="string" />
+            </extension>
+        </simpleContent>
+    </complexType>
+</schema>

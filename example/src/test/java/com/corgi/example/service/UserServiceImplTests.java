@@ -12,6 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +34,9 @@ class UserServiceImplTests {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private PlatformTransactionManager transactionManager;
 
     private List<User> users;
 
@@ -113,6 +120,36 @@ class UserServiceImplTests {
     @Test
     void readOnlyTransactionAttribute() {
         assertThrows(TransientDataAccessResourceException.class, () -> testUserService.getAll());
+    }
+
+//    @Test
+//    void transactionSync() {
+//
+//        // 트랜잭션 정의는 기본 값을 사용한다.
+//        DefaultTransactionDefinition txDefinition = new DefaultTransactionDefinition();
+//
+//        // 트랜잭션 매니저에게 트랜잭션을 요청한다. 기존에 시작된 트랜잭션이 없으니 새로운 트랜잭션을 시작시키고 트랜잭션 정보를 돌려준다.
+//        // 동시에 만들어진 트랜잭션을 다른 곳에서도 사용할 수 있도록 동기화한다.
+//        TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+//
+//        try {
+//            // 테스트 코드 상의 모든 작업을 하나의 트랜잭션으로 통합한다.
+//            userDao.deleteAll();
+//            userDao.add(users.get(0));
+//            userDao.add(users.get(1));
+//        } finally {
+//            // 테스트 결과가 어떻든 상관없이 테스트가 끝나면 무조건 롤백한다. 테스트 중에 발생했던 DB의 변경 사항은 모두 이전 상태로 복구한다.
+//            transactionManager.rollback(txStatus);
+//        }
+//    }
+
+    @Test
+    @Transactional
+    void transactionSync() {
+        // 테스트 코드 상의 모든 작업을 하나의 트랜잭션으로 통합한다.
+        userDao.deleteAll();
+        userDao.add(users.get(0));
+        userDao.add(users.get(1));
     }
 
     private void checkLevelUpgraded(User user, boolean upgraded) {

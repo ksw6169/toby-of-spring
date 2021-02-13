@@ -21,35 +21,35 @@ public class AopConfig {
      * 빈 클래스가 프록시 선정 대상이라면 프록시를 만들어 원래 빈 오브젝트와 바꿔치기한다.
      * 원래 빈 오브젝트는 프록시 뒤에 연결되서 프록시를 통해서만 접근 가능하게 바뀌는 것이다.
      */
-    @Bean
-    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
-        return new DefaultAdvisorAutoProxyCreator();
-    }
+//    @Bean
+//    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator() {
+//        return new DefaultAdvisorAutoProxyCreator();
+//    }
 
-    @Bean
-    public Advisor txAdvisor(TransactionInterceptor txAdvice) {
-        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-        pointcut.setExpression("execution(* *..*ServiceImpl.*(..))");
-        return new DefaultPointcutAdvisor(pointcut, txAdvice);
-    }
+//    @Bean
+//    public Advisor txAdvisor(TransactionInterceptor txAdvice) {
+//        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+//        pointcut.setExpression("execution(* *..*ServiceImpl.*(..))");
+//        return new DefaultPointcutAdvisor(pointcut, txAdvice);
+//    }
 
-    @Bean
-    public TransactionInterceptor txAdvice(PlatformTransactionManager transactionManager) {
-        DefaultTransactionAttribute readOnlyAttribute = new DefaultTransactionAttribute(TransactionDefinition.PROPAGATION_REQUIRED);
-        readOnlyAttribute.setReadOnly(true);
-
-        RuleBasedTransactionAttribute defaultAttribute = new RuleBasedTransactionAttribute();
-        defaultAttribute.setRollbackRules(Arrays.asList(new RollbackRuleAttribute(Exception.class)));
-        defaultAttribute.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
-
-        Properties transactionAttributes = new Properties();
-        transactionAttributes.setProperty("get*", readOnlyAttribute.toString());
-        transactionAttributes.setProperty("*", defaultAttribute.toString());
-
-        TransactionInterceptor transactionAdvice = new TransactionInterceptor();
-        transactionAdvice.setTransactionAttributes(transactionAttributes);
-        transactionAdvice.setTransactionManager(transactionManager);
-
-        return transactionAdvice;
-    }
+//    @Bean
+//    public TransactionInterceptor txAdvice(PlatformTransactionManager transactionManager) {
+//        DefaultTransactionAttribute readOnlyAttribute = new DefaultTransactionAttribute(TransactionDefinition.PROPAGATION_REQUIRED);
+//        readOnlyAttribute.setReadOnly(true);
+//
+//        RuleBasedTransactionAttribute defaultAttribute = new RuleBasedTransactionAttribute();
+//        defaultAttribute.setRollbackRules(Arrays.asList(new RollbackRuleAttribute(Exception.class)));
+//        defaultAttribute.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+//
+//        Properties transactionAttributes = new Properties();
+//        transactionAttributes.setProperty("get*", readOnlyAttribute.toString());
+//        transactionAttributes.setProperty("*", defaultAttribute.toString());
+//
+//        TransactionInterceptor transactionAdvice = new TransactionInterceptor();
+//        transactionAdvice.setTransactionAttributes(transactionAttributes);
+//        transactionAdvice.setTransactionManager(transactionManager);
+//
+//        return transactionAdvice;
+//    }
 }

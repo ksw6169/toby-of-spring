@@ -1,11 +1,11 @@
 package com.corgi.example.service;
 
-import com.corgi.example.exception.SqlNotFoundException;
 import com.corgi.example.exception.SqlRetrievalFailureException;
 import com.corgi.example.xml.SqlType;
 import com.corgi.example.xml.Sqlmap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Service;
 
@@ -19,29 +19,30 @@ import java.io.IOException;
 public class OxmSqlService implements SqlService {
 
     private final Unmarshaller unmarshaller;
-    private final String sqlmapFile;
     private final SqlRegistry sqlRegistry;
+
     private final OxmSqlReader oxmSqlReader = new OxmSqlReader();
+    private final BaseSqlService baseSqlService = new BaseSqlService();
+
+    private Resource sqlmap = new ClassPathResource("sqlmap.xml");
 
     @PostConstruct
     public void loadSql() {
-        this.oxmSqlReader.read(this.sqlRegistry);
+        this.baseSqlService.setSqlReader(this.oxmSqlReader);
+        this.baseSqlService.setSqlRegistry(this.sqlRegistry);
+        this.baseSqlService.loadSql();
     }
 
     @Override
     public String getSql(String key) throws SqlRetrievalFailureException {
-        try {
-            return this.sqlRegistry.findSql(key);
-        } catch (SqlNotFoundException e) {
-            throw new SqlRetrievalFailureException(e);
-        }
+        return this.baseSqlService.getSql(key);
     }
 
     private class OxmSqlReader implements SqlReader {
         @Override
         public void read(SqlRegistry sqlRegistry) {
             try {
-                Source source = new StreamSource(new ClassPathResource(sqlmapFile).getInputStream());
+                Source source = new StreamSource(sqlmap.getInputStream());
 
                 Sqlmap sqlmap = (Sqlmap) unmarshaller.unmarshal(source);
 
@@ -49,7 +50,7 @@ public class OxmSqlService implements SqlService {
                     sqlRegistry.registerSql(sqlType.getKey(), sqlType.getValue());
                 }
             } catch (IOException e) {
-                throw new IllegalArgumentException(sqlmapFile + "을 가져올 수 없습니다.", e);
+                throw new IllegalArgumentException(sqlmap.getFilename() + "을 가져올 수 없습니다.", e);
             }
         }
     }

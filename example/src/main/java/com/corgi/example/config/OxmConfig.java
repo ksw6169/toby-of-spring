@@ -12,9 +12,4 @@ public class OxmConfig {
         unmarshaller.setContextPath("com.corgi.example.xml");
         return unmarshaller;
     }
-
-    @Bean
-    public String sqlmapFile() {
-        return "sqlmap.xml";
-    }
 }

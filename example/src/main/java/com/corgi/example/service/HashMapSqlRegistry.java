@@ -2,12 +2,10 @@ package com.corgi.example.service;
 
 import com.corgi.example.exception.SqlNotFoundException;
 import com.corgi.example.exception.SqlRetrievalFailureException;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
 public class HashMapSqlRegistry implements SqlRegistry {
     private Map<String, String> sqlMap = new HashMap<>();
 

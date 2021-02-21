@@ -8,6 +8,10 @@ public class SqlNotFoundException extends RuntimeException {
         super(message);
     }
 
+    public SqlNotFoundException(Throwable cause) {
+        super(cause);
+    }
+
     public SqlNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }

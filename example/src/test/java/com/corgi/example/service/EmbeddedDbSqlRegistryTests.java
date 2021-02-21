@@ -26,4 +26,17 @@ public class EmbeddedDbSqlRegistryTests extends AbstractUpdatableSqlRegistryTest
     void tearDown() {
         database.shutdown();
     }
+
+//    @Test
+//    void transactionalUpdate() {
+//        checkFindResult("SQL1", "SQL2", "SQL3");
+//
+//        Map<String, String> sqlmap = new HashMap<>();
+//        sqlmap.put("KEY1", "Modified1");
+//        sqlmap.put("KEY9999!@#$", "Modified9999");
+//
+//        assertThrows(SqlUpdateFailureException.class, () -> sqlRegistry.updateSql(sqlmap));
+//
+//        checkFindResult("SQL1", "SQL2", "SQL3");
+//    }
 }

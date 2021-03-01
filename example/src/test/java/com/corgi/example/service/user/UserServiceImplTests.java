@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
@@ -35,6 +36,9 @@ class UserServiceImplTests {
 
     @Autowired
     private PlatformTransactionManager transactionManager;
+
+    @Autowired
+    private DefaultListableBeanFactory beanFactory;
 
     private List<User> users;
 
@@ -155,6 +159,13 @@ class UserServiceImplTests {
             assertEquals(user.getLevel().nextLevel(), upgradedUser.getLevel());
         } else {
             assertEquals(user.getLevel(), upgradedUser.getLevel());
+        }
+    }
+
+    @Test
+    void beans() {
+        for (String n : beanFactory.getBeanDefinitionNames()) {
+            System.out.println(n + " \t " + beanFactory.getBean(n).getClass().getName());
         }
     }
 }

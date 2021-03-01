@@ -1,6 +1,6 @@
 spring:
-  dataSource:
-    driverClassName: com.mysql.cj.jdbc.Driver
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost/springbook?serverTimezone=UTC
     username: root
     password: root

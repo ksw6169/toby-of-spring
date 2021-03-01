@@ -1,4 +1,4 @@
-package com.corgi.example.service;
+package com.corgi.example.service.user;
 
 import com.corgi.example.dao.UserDao;
 import com.corgi.example.domain.Level;

@@ -3,7 +3,7 @@ package com.corgi.example.learningtest;
 import com.corgi.example.dao.UserDao;
 import com.corgi.example.domain.Level;
 import com.corgi.example.domain.User;
-import com.corgi.example.service.UserServiceImpl;
+import com.corgi.example.service.user.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

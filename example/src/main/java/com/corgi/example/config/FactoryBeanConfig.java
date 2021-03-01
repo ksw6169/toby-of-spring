@@ -3,7 +3,7 @@
 //import com.corgi.example.domain.Message;
 //import com.corgi.example.factory.MessageFactory;
 //import com.corgi.example.factory.TxProxyFactory;
-//import com.corgi.example.service.UserService;
+//import com.corgi.example.service.user.UserService;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.Configuration;
 //import org.springframework.transaction.PlatformTransactionManager;

@@ -1,4 +1,4 @@
-package com.corgi.example.service;
+package com.corgi.example.service.sql;
 
 import org.springframework.boot.test.context.SpringBootTest;
 

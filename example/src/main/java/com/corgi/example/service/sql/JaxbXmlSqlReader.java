@@ -1,5 +1,7 @@
-package com.corgi.example.service;
+package com.corgi.example.service.sql;
 
+import com.corgi.example.service.sql.SqlReader;
+import com.corgi.example.service.sql.SqlRegistry;
 import com.corgi.example.xml.SqlType;
 import com.corgi.example.xml.Sqlmap;
 import lombok.Setter;

@@ -1,7 +1,7 @@
 package com.corgi.example.config;
 
-import com.corgi.example.service.EmbeddedDbSqlRegistry;
-import com.corgi.example.service.SqlRegistry;
+import com.corgi.example.service.sql.EmbeddedDbSqlRegistry;
+import com.corgi.example.service.sql.SqlRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

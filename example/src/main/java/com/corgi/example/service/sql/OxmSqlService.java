@@ -1,4 +1,4 @@
-package com.corgi.example.service;
+package com.corgi.example.service.sql;
 
 import com.corgi.example.exception.SqlRetrievalFailureException;
 import com.corgi.example.xml.SqlType;

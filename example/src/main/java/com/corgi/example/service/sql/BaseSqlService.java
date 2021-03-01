@@ -1,7 +1,9 @@
-package com.corgi.example.service;
+package com.corgi.example.service.sql;
 
 import com.corgi.example.exception.SqlNotFoundException;
 import com.corgi.example.exception.SqlRetrievalFailureException;
+import com.corgi.example.service.sql.SqlReader;
+import com.corgi.example.service.sql.SqlRegistry;
 import lombok.Getter;
 import lombok.Setter;
 

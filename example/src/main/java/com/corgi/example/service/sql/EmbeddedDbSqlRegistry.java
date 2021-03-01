@@ -1,7 +1,8 @@
-package com.corgi.example.service;
+package com.corgi.example.service.sql;
 
 import com.corgi.example.exception.SqlNotFoundException;
 import com.corgi.example.exception.SqlUpdateFailureException;
+import com.corgi.example.service.sql.UpdatableSqlRegistry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

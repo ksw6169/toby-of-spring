@@ -1,4 +1,4 @@
-package com.corgi.example.service;
+package com.corgi.example.service.sql;
 
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

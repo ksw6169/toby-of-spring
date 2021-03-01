@@ -1,7 +1,8 @@
-package com.corgi.example.service;
+package com.corgi.example.service.sql;
 
 import com.corgi.example.exception.SqlNotFoundException;
 import com.corgi.example.exception.SqlRetrievalFailureException;
+import com.corgi.example.service.sql.SqlRegistry;
 
 import java.util.HashMap;
 import java.util.Map;

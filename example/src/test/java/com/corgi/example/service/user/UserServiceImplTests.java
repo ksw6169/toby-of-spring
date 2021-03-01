@@ -1,4 +1,4 @@
-package com.corgi.example.service;
+package com.corgi.example.service.user;
 
 import com.corgi.example.dao.UserDao;
 import com.corgi.example.domain.Level;
@@ -13,9 +13,7 @@ import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import java.util.Arrays;
 import java.util.List;

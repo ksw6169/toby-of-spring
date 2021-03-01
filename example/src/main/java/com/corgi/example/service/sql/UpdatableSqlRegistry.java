@@ -1,6 +1,7 @@
-package com.corgi.example.service;
+package com.corgi.example.service.sql;
 
 import com.corgi.example.exception.SqlUpdateFailureException;
+import com.corgi.example.service.sql.SqlRegistry;
 
 import java.util.Map;
 

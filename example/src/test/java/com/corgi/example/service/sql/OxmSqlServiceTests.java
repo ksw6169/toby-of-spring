@@ -1,5 +1,6 @@
-package com.corgi.example.service;
+package com.corgi.example.service.sql;
 
+import com.corgi.example.service.sql.OxmSqlService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

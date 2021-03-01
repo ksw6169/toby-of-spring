@@ -1,4 +1,4 @@
-package com.corgi.example.service;
+package com.corgi.example.service.sql;
 
 public interface SqlReader {
     /**
